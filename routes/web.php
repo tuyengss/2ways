@@ -16,6 +16,8 @@ $this->patch('send_sms', 'Admin\SendSmsController@sendSms')->name('admin.send_sm
 $this->get('inbox_send', 'Admin\SendSmsController@getAllSms')->name('admin.inbox_send');
 $this->get('inbox_come', 'Admin\SendSmsController@getAllSmsCome')->name('admin.inbox_come');
 $this->get('keyword', 'Admin\KeywordsController@index')->name('admin.keyword');
+$this->get('errors', 'Admin\SendSmsController@errCodes')->name('admin.errors');
+
 
 
 // Password Reset Routes...

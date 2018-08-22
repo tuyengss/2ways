@@ -40,6 +40,22 @@ class SendSmsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function errCodes()
+    {
+        if (! Gate::allows('user_access')) {
+            return abort(401);
+        }
+
+        $errCode = Config::get('constants.ErrCode');
+        
+        return view('admin.sms.errors', compact('errCode'));
+    }
+
+    /**
+     * Display a listing of User.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         if (! Gate::allows('user_access')) {

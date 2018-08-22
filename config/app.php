@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Dashboard Widgets',
+    'name' => 'DEMO 2WAYS',
 
     /*
     |--------------------------------------------------------------------------
@@ -194,6 +194,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Orchestra\Parser\XmlServiceProvider::class,
 
     ],
 
@@ -250,6 +251,7 @@ return [
         'Image'        => Intervention\Image\Facades\Image::class,
         'Form'         => Collective\Html\FormFacade::class,
         'Html'         => Collective\Html\HtmlFacade::class,
+        'XmlParser' => Orchestra\Parser\Xml\Facade::class,
         
     ],
 

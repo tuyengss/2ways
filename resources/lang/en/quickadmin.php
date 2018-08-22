@@ -1,15 +1,74 @@
 <?php
 
 return [
-		'user-management' => [		'title' => 'User management',		'fields' => [		],	],
-		'roles' => [		'title' => 'Roles',		'fields' => [			'title' => 'Title',		],	],
-		'users' => [		'title' => 'Users',		'fields' => [			'name' => 'Name',			'email' => 'Email',			'password' => 'Password',			'role' => 'Role',			'remember-token' => 'Remember token',		],	],
-		'expense-management' => [		'title' => 'Expense Management',		'fields' => [		],	],
-		'expense-category' => [		'title' => 'Expense Categories',		'fields' => [			'name' => 'Name',		],	],
-		'income-category' => [		'title' => 'Income categories',		'fields' => [			'name' => 'Name',		],	],
-		'income' => [		'title' => 'Income',		'fields' => [			'income-category' => 'Income Category',			'entry-date' => 'Entry date',			'amount' => 'Amount',		],	],
-		'expense' => [		'title' => 'Expenses',		'fields' => [			'expense-category' => 'Expense Category',			'entry-date' => 'Entry date',			'amount' => 'Amount',		],	],
-		'monthly-report' => [		'title' => 'Monthly report',		'fields' => [		],	],
+	
+	'user-management' => [
+		'title' => 'User management',
+		'fields' => [
+		],
+	],
+	
+	'roles' => [
+		'title' => 'Roles',
+		'fields' => [
+			'title' => 'Title',
+		],
+	],
+	
+	'users' => [
+		'title' => 'Users',
+		'fields' => [
+			'name' => 'Name',
+			'email' => 'Email',
+			'password' => 'Password',
+			'role' => 'Role',
+			'remember-token' => 'Remember token',
+		],
+	],
+	
+	'expense-management' => [
+		'title' => 'Expense Management',
+		'fields' => [
+		],
+	],
+	
+	'expense-category' => [
+		'title' => 'Expense Categories',
+		'fields' => [
+			'name' => 'Name',
+		],
+	],
+	
+	'income-category' => [
+		'title' => 'Income categories',
+		'fields' => [
+			'name' => 'Name',
+		],
+	],
+	
+	'income' => [
+		'title' => 'Income',
+		'fields' => [
+			'income-category' => 'Income Category',
+			'entry-date' => 'Entry date',
+			'amount' => 'Amount',
+		],
+	],
+	
+	'expense' => [
+		'title' => 'Expenses',
+		'fields' => [
+			'expense-category' => 'Expense Category',
+			'entry-date' => 'Entry date',
+			'amount' => 'Amount',
+		],
+	],
+	
+	'monthly-report' => [
+		'title' => 'Monthly report',
+		'fields' => [
+		],
+	],
 	'qa_create' => 'Create',
 	'qa_save' => 'Save',
 	'qa_edit' => 'Edit',
@@ -43,7 +102,7 @@ return [
 	'qa_title' => 'Title',
 	'qa_roles' => 'Roles',
 	'qa_role' => 'Role',
-	'qa_user_management' => 'User management',
+	'qa_user_management' => 'Quản lý Tài khoản',
 	'qa_users' => 'Users',
 	'qa_user' => 'User',
 	'qa_name' => 'Name',

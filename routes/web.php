@@ -10,6 +10,14 @@ $this->post('logout', 'Auth\LoginController@logout')->name('auth.logout');
 $this->get('change_password', 'Auth\ChangePasswordController@showChangePasswordForm')->name('auth.change_password');
 $this->patch('change_password', 'Auth\ChangePasswordController@changePassword')->name('auth.change_password');
 
+//send sms
+$this->get('send_sms', 'Admin\SendSmsController@index')->name('admin.send_sms');
+$this->patch('send_sms', 'Admin\SendSmsController@sendSms')->name('admin.send_sms');
+$this->get('inbox_send', 'Admin\SendSmsController@getAllSms')->name('admin.inbox_send');
+$this->get('inbox_come', 'Admin\SendSmsController@getAllSmsCome')->name('admin.inbox_come');
+$this->get('keyword', 'Admin\KeywordsController@index')->name('admin.keyword');
+
+
 // Password Reset Routes...
 $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('auth.password.reset');
 $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('auth.password.reset');
@@ -32,4 +40,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
     Route::resource('expenses', 'Admin\ExpensesController');
     Route::post('expenses_mass_destroy', ['uses' => 'Admin\ExpensesController@massDestroy', 'as' => 'expenses.mass_destroy']);
     Route::resource('monthly_reports', 'Admin\MonthlyReportsController');
+
+    //add
+    Route::resource('send_sms', 'Admin\SendSmsController');
 });

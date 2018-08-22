@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">{{ ucfirst(config('app.name')) }} @lang('quickadmin.qa_login')</div>
+                <div class="panel-heading">{{ ucfirst(config('app.name')) }}</div>
                 <div class="panel-body">
                     
                     @if (count($errors) > 0)
@@ -50,7 +50,7 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <a href="{{ route('auth.password.reset') }}">@lang('quickadmin.qa_forgot_password')</a>
+                                <a href="{{ route('auth.password.reset') }}">Quên tài khoản đăng nhập</a>
                             </div>
                         </div>
 
@@ -59,7 +59,7 @@
                             <div class="col-md-6 col-md-offset-4">
                                 <label>
                                     <input type="checkbox"
-                                           name="remember"> @lang('quickadmin.qa_remember_me')
+                                           name="remember"> Ghi nhớ đăng nhập
                                 </label>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                                 <button type="submit"
                                         class="btn btn-primary"
                                         style="margin-right: 15px;">
-                                    @lang('quickadmin.qa_login')
+                                    Đăng nhập tài khoản
                                 </button>
                             </div>
                         </div>

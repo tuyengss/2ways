@@ -13,29 +13,36 @@
                     <span class="title">THỐNG KÊ</span>
                 </a>
             </li>
-            <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
+            <li class="{{ $request->segment(1) == 'send_sms' ? 'active' : '' }}">
                 <a href="{{ url('/send_sms') }}">
                     <i class="fa fa-send"></i>
                     <span class="title">GỬI TIN NHẮN</span>
                 </a>
             </li>
-            <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
+            <li class="{{ $request->segment(1) == 'inbox_send' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_send') }}">
                     <i class="fa fa-inbox"></i>
                     <span class="title">TIN NHẮN GỬI ĐI </span>
                 </a>
             </li>
-            <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
+            <li class="{{ $request->segment(1) == 'inbox_come' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_come') }}">
                     <i class="fa fa-inbox"></i>
                     <span class="title">TIN NHẮN ĐẾN </span>
                 </a>
             </li>
 
-            <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
+            <li class="{{ $request->segment(1) == 'keyword' ? 'active' : '' }}">
                 <a href="{{ url('/keyword') }}">
                     <i class="fa fa-inbox"></i>
                     <span class="title">TỪ KHÓA </span>
+                </a>
+            </li>
+
+            <li class="{{ $request->segment(1) == 'errors' ? 'active' : '' }}">
+                <a href="{{ url('/errors') }}">
+                    <i class="fa fa-inbox"></i>
+                    <span class="title">THÔNG TIN API TRẢ VỀ</span>
                 </a>
             </li>
 

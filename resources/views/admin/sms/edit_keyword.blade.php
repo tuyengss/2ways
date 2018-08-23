@@ -3,7 +3,7 @@
 @section('content')
     <h3 class="page-title">Từ khóa</h3>
     {!! Form::open(['method' => 'POST', 'route' => ['admin.keywords.update', $keyword->id]]) !!}
-
+    <input name="_method" type="hidden" value="PATCH">
     <div class="panel panel-default">
         <div class="panel-heading">
             @lang('Thêm mới')

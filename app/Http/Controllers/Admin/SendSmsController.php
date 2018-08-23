@@ -16,6 +16,7 @@ use Validator;
 use App\Sms;
 use Config;
 use Orchestra\Parser\Xml\Facade as XmlParser;
+use Excel;
 
 class SendSmsController extends Controller
 {
@@ -168,6 +169,47 @@ class SendSmsController extends Controller
 
         return view('admin.sms.index', array('message' => $errCode[$status], 'data' => $params));
     }
+
+    /**
+
+     * Create a new controller instance.
+
+     *
+
+     * @return void
+
+     */
+
+    public function importFile(Request $request){
+        
+        if($request->hasFile('sample_file')){
+
+            $path = $request->file('sample_file')->getRealPath();
+
+            $data = \Excel::load($path)->get();
+
+            
+
+            if($data->count()){
+                
+                foreach ($data as $key => $value) {
+
+                    $arr[] = ['phone' => $value->so_dien_thoai, 'name' => $value->ten_dataname];
+                }
+
+                if(!empty($arr)){
+
+                    return $arr;
+
+                }
+
+            }
+
+        }
+
+        dd('Request data does not have any files to import.');      
+
+    } 
 
     /**
      * parse xml.

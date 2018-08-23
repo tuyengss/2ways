@@ -4,9 +4,6 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <ul class="sidebar-menu">
-
-             
-
             <li class="{{ $request->segment(1) == 'home' ? 'active' : '' }}">
                 <a href="{{ url('/') }}">
                     <i class="fa fa-list"></i>
@@ -21,13 +18,13 @@
             </li>
             <li class="{{ $request->segment(1) == 'inbox_send' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_send') }}">
-                    <i class="fa fa-inbox"></i>
+                    <i class="fa fa-envelope"></i>
                     <span class="title">TIN NHẮN GỬI ĐI </span>
                 </a>
             </li>
             <li class="{{ $request->segment(1) == 'inbox_come' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_come') }}">
-                    <i class="fa fa-inbox"></i>
+                    <i class="fa fa-envelope"></i>
                     <span class="title">TIN NHẮN ĐẾN </span>
                 </a>
             </li>

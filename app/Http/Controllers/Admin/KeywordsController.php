@@ -17,7 +17,7 @@ class KeywordsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
     /**
      * Display a listing of User.
@@ -58,17 +58,19 @@ class KeywordsController extends Controller
      * @param  \App\Http\Requests\StoreUsersRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreUsersRequest $request)
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|unique:posts|max:255',
-            'body' => 'required',
+            'keyword' => 'required',
+            'content' => 'required',
         ]);
 
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $keyword = Keyword::create($request->all());
+        $data = $request->all();
+        $data['sender'] = 0;
+        $keyword = Keyword::create($data);
 
         return redirect()->route('admin.keyword');
     }
@@ -98,12 +100,19 @@ class KeywordsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateUsersRequest $request, $id)
+    public function update(Request $request, $id)
     {
         if (! Gate::allows('user_edit')) {
             return abort(401);
         }
+
+        $validatedData = $request->validate([
+            'keyword' => 'required',
+            'content' => 'required',
+        ]);
+
         $keyword = Keyword::findOrFail($id);
+        
         $keyword->update($request->all());
 
         return redirect()->route('admin.keyword');

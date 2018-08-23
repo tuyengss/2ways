@@ -8,9 +8,17 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUsersRequest;
 use App\Http\Requests\Admin\UpdateUsersRequest;
+use App\keyword;
 
 class KeywordsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of User.
      *
@@ -23,9 +31,9 @@ class KeywordsController extends Controller
         }
 
 
-        $users = User::all();
+        $keywords = keyword::all();
 
-        return view('admin.sms.index_keyword', compact('users'));
+        return view('admin.sms.index_keyword', compact('keywords'));
     }
 
     /**
@@ -41,7 +49,7 @@ class KeywordsController extends Controller
         
         $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
 
-        return view('admin.users.create', compact('roles'));
+        return view('admin.sms.create_keyword', compact('roles'));
     }
 
     /**
@@ -52,14 +60,17 @@ class KeywordsController extends Controller
      */
     public function store(StoreUsersRequest $request)
     {
+        $validatedData = $request->validate([
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required',
+        ]);
+
         if (! Gate::allows('user_create')) {
             return abort(401);
         }
-        $user = User::create($request->all());
+        $keyword = Keyword::create($request->all());
 
-
-
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.keyword');
     }
 
 
@@ -75,11 +86,9 @@ class KeywordsController extends Controller
             return abort(401);
         }
         
-        $roles = \App\Role::get()->pluck('title', 'id')->prepend(trans('quickadmin.qa_please_select'), '');
+        $keyword = Keyword::findOrFail($id);
 
-        $user = User::findOrFail($id);
-
-        return view('admin.users.edit', compact('user', 'roles'));
+        return view('admin.sms.edit_keyword', compact('keyword'));
     }
 
     /**
@@ -94,12 +103,10 @@ class KeywordsController extends Controller
         if (! Gate::allows('user_edit')) {
             return abort(401);
         }
-        $user = User::findOrFail($id);
-        $user->update($request->all());
+        $keyword = Keyword::findOrFail($id);
+        $keyword->update($request->all());
 
-
-
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.keyword');
     }
 
 
@@ -114,9 +121,9 @@ class KeywordsController extends Controller
         if (! Gate::allows('user_view')) {
             return abort(401);
         }
-        $user = User::findOrFail($id);
+        $keyword = Keyword::findOrFail($id);
 
-        return view('admin.users.show', compact('user'));
+        return view('admin.users.show', compact('keyword'));
     }
 
 
@@ -131,10 +138,10 @@ class KeywordsController extends Controller
         if (! Gate::allows('user_delete')) {
             return abort(401);
         }
-        $user = User::findOrFail($id);
-        $user->delete();
+        $keyword = Keyword::findOrFail($id);
+        $keyword->delete();
 
-        return redirect()->route('admin.users.index');
+        return redirect()->route('admin.keyword');
     }
 
     /**
@@ -148,7 +155,7 @@ class KeywordsController extends Controller
             return abort(401);
         }
         if ($request->input('ids')) {
-            $entries = User::whereIn('id', $request->input('ids'))->get();
+            $entries = Keyword::whereIn('id', $request->input('ids'))->get();
 
             foreach ($entries as $entry) {
                 $entry->delete();

@@ -2,7 +2,7 @@
 
 @section('content')
     <h3 class="page-title">Từ khóa</h3>
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.keywords.store']]) !!}
+    {!! Form::open(['method' => 'POST', 'route' => ['admin.keywords.update', $keyword->id]]) !!}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,7 +13,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('keyword', trans('Từ khóa').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('keyword', old('keyword'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::text('keyword', $keyword->keyword, ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('keyword'))
                         <p class="help-block">
@@ -25,7 +25,7 @@
             <div class="row">
                 <div class="col-xs-12 form-group">
                     {!! Form::label('content', trans('Nội dung trả về').'*', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('content', old('content'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {!! Form::textarea('content', $keyword->content, ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
                     <p class="help-block"></p>
                     @if($errors->has('content'))
                         <p class="help-block">

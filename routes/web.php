@@ -15,10 +15,13 @@ $this->get('send_sms', 'Admin\SendSmsController@index')->name('admin.send_sms');
 $this->patch('send_sms', 'Admin\SendSmsController@sendSms')->name('admin.send_sms');
 $this->get('inbox_send', 'Admin\SendSmsController@getAllSms')->name('admin.inbox_send');
 $this->get('inbox_come', 'Admin\SendSmsController@getAllSmsCome')->name('admin.inbox_come');
+
+//keyword
 $this->get('keyword', 'Admin\KeywordsController@index')->name('admin.keyword');
+$this->get('create_keyword', 'Admin\KeywordsController@create')->name('admin.create_keyword');
+$this->get('create_keyword', 'Admin\KeywordsController@create')->name('admin.create_keyword');
+//errors
 $this->get('errors', 'Admin\SendSmsController@errCodes')->name('admin.errors');
-
-
 
 // Password Reset Routes...
 $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('auth.password.reset');
@@ -45,4 +48,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin', 'as' => 'admin.'], 
 
     //add
     Route::resource('send_sms', 'Admin\SendSmsController');
+    Route::resource('keywords', 'Admin\KeywordsController');
+
+    Route::post('logs_mass_destroy', ['uses' => 'Admin\SendSmsController@massDestroy', 'as' => 'sms.mass_destroy']);
+
 });

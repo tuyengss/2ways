@@ -52,6 +52,7 @@ class UsersController extends Controller
      */
     public function store(StoreUsersRequest $request)
     {
+       
         if (! Gate::allows('user_create')) {
             return abort(401);
         }

@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h3 class="page-title">Danh sách tin nhận</h3>
+    <h3 class="page-title">Danh sách tin gửi đi</h3>
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,16 +13,14 @@
             <table class="table table-bordered table-striped {{ count($sms) > 0 ? 'datatable' : '' }} @can('user_delete') dt-select @endcan">
                 <thead>
                     <tr>
-                        <th></th>
                         @can('user_delete')
-                            <th style="text-align:center;">Stt</th>
+                            <th style="text-align:center;"><input type="checkbox" id="select-all" /></th>
                         @endcan
 
                         <th>Người gửi</th>
                         <th>Người nhận</th>
                         <th>Nội dung tin nhắn</th>
                         <th>Trạng thái</th>
-                        <th>Loại tin nhắn</th>
                         <th>Thời gian thực hiện</th></th>
 
                     </tr>
@@ -30,17 +28,17 @@
                 
                 <tbody>
                     @if (count($sms) > 0)
+                        @foreach ($sms as $item)
+                            <tr data-entry-id="{{ $item->id }}">
+                                @can('user_delete')
+                                    <td></td>
+                                @endcan
 
-                        @foreach ($sms as  $key => $item)
-                            <tr>
-                                <td></td>
-                                <td field-key='stt'>{{ $key + 1 }}</td>
-                                <td field-key='sender'>{{ $item->From }}</td>
-                                <td field-key='reciever'>{{ $item->To }}</td>
-                                <td field-key='content'>{{ htmlspecialchars($item->MsgContent) }}</td>
-                                <td field-key='status'>{{ $item->Type }}</td>
-                                <td field-key='status'>{{ $item->StatusName }}</td>
-                                <td field-key='status'>{{ $item->Time }}</td>
+                                <td field-key='sender'>{{ $item->sender }}</td>
+                                <td field-key='reciever'>{{ $item->reciever }}</td>
+                                <td field-key='content'>{{ $item->content }}</td>
+                                <td field-key='status'><a class="btn btn-xs {{ $item->status == 1 || $item->status == 200 ? 'btn-success':'btn-warning' }} ">{{ $errCode[$item->status] }}</a></td>
+                                <td field-key='status'>{{ $item->created_at }}</td>
 
                             </tr>
                         @endforeach
@@ -54,3 +52,12 @@
         </div>
     </div>
 @stop
+
+@section('javascript') 
+    <script>
+        @can('user_delete')
+            window.route_mass_crud_entries_destroy = '{{ route('admin.sms.mass_destroy') }}';
+        @endcan
+
+    </script>
+@endsection

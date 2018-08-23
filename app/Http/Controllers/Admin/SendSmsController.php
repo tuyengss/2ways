@@ -68,7 +68,7 @@ class SendSmsController extends Controller
     }
 
      /**
-     * Display a listing of User.
+     * Display a listing of MT.
      *
      * @return \Illuminate\Http\Response
      */
@@ -82,7 +82,33 @@ class SendSmsController extends Controller
         //get errCode
         $errCode = Config::get('constants.ErrCode');
 
-        return view('admin.sms.inbox', compact('sms','errCode'));
+        return view('admin.sms.send', compact('sms','errCode'));
+    }
+
+     /**
+     * Display a listing of message MO.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllSmsCome()
+    {
+        if (! Gate::allows('user_access')) {
+            return abort(401);
+        }
+
+        $url = 'http://192.168.1.99:8888/api/v1/logs';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        
+        $obj = json_decode($data);
+        $sms = $obj->logs;
+        
+        
+        return view('admin.sms.inbox', compact('sms'));
     }
 
     /**
@@ -230,6 +256,25 @@ class SendSmsController extends Controller
             'phone' => 'required',
             'content' => 'required|min:6',
         ]);
+    }
+
+    /**
+     * Delete all selected User at once.
+     *
+     * @param Request $request
+     */
+    public function massDestroy(Request $request)
+    {
+        if (! Gate::allows('user_delete')) {
+            return abort(401);
+        }
+        if ($request->input('ids')) {
+            $entries = Sms::whereIn('id', $request->input('ids'))->get();  
+
+            foreach ($entries as $entry) {
+                $entry->delete();
+            }
+        }
     }
 
 }

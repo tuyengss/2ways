@@ -16,6 +16,12 @@
                     <span class="title">GỬI TIN NHẮN</span>
                 </a>
             </li>
+            {{-- <li class="{{ $request->segment(1) == 'import-excel' ? 'active' : '' }}">
+                <a href="{{ url('/import_excel') }}">
+                    <i class="fa fa-send"></i>
+                    <span class="title">IMPORT EXCEL</span>
+                </a>
+            </li> --}}
             <li class="{{ $request->segment(1) == 'inbox_send' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_send') }}">
                     <i class="fa fa-envelope"></i>

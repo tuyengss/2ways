@@ -24,7 +24,7 @@
 			</div>
 		</div>
 	@else
-		{!! Form::open(['method' => 'PATCH', 'route' => ['admin.send_sms']]) !!}
+		{!! Form::open(['method' => 'PATCH', 'route' => ['admin.send_sms'], 'files'=>'true']) !!}
 		<!-- If no success message in flash session show change password form  -->
 		
 		<div class="col-md-6">
@@ -50,6 +50,16 @@
 
 					<div class="row">
 						<div class="col-xs-12 form-group">
+							{!! Form::label('sample_file','Import Excel file:') !!}
+							{!! Form::file('sample_file', array('class' => 'form-control')) !!}
+		
+							{!! $errors->first('sample_file', '<p class="alert alert-danger">:message</p>') !!}
+		
+							</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12 form-group">
 							{!! Form::label('content', 'Nội dung SMS(*)', ['class' => 'control-label']) !!}
 							<span style="color:red">Lưu ý: Nội dung tin nhắn phải có nghĩa, tuyệt đối không có chữ “test” hoặc “kiểm tra”.</span>
 							{!! Form::textarea ('content', @$data['content'] ,['class' => 'form-control', 'placeholder' => '%xac nhan so nguoi se tham gia% |  PNS%moi ban den phong van%']) !!}
@@ -66,38 +76,6 @@
 			</div>
 			{!! Form::submit("Gửi tin nhắn", ['class' => 'btn btn-danger']) !!}
 			{!! Form::close() !!}
-			
-			{!! Form::open(array('route' => 'import.file','method'=>'POST','files'=>'true')) !!}
-
-        <div class="row">
-
-           <div class="col-xs-12 col-sm-12 col-md-12">
-
-                <div class="form-group">
-
-                    {!! Form::label('sample_file','Select File to Import:',['class'=>'col-md-3']) !!}
-
-                    <div class="col-md-9">
-
-                    {!! Form::file('sample_file', array('class' => 'form-control')) !!}
-
-                    {!! $errors->first('sample_file', '<p class="alert alert-danger">:message</p>') !!}
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-
-            {!! Form::submit('Upload',['class'=>'btn btn-primary']) !!}
-
-            </div>
-
-        </div>
-
-       {!! Form::close() !!}
 
 
 		</div>

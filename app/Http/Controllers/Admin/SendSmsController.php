@@ -79,7 +79,7 @@ class SendSmsController extends Controller
             return abort(401);
         }
 
-        $sms = Sms::all();
+        $sms = Sms::all()->sortByDesc('id');
         //get errCode
         $errCode = Config::get('constants.ErrCode');
 
@@ -106,7 +106,9 @@ class SendSmsController extends Controller
         curl_close($ch);
         
         $obj = json_decode($data);
-        $sms = $obj->logs;
+        $sms = array();
+        if($obj)
+            $sms = $obj->logs;
         
         
         return view('admin.sms.inbox', compact('sms'));
@@ -122,52 +124,75 @@ class SendSmsController extends Controller
     {
         $this->validator($request->all())->validate();
         $params = $request->all();
-        $array = array();
-
+        
+        $excel = $this->importFile($request);
+        if($excel){
+            $lists = $excel;            
+        }else{
+            $lists = array('only' => $params['phone']);
+        }
+        
         if($params){    
-            $client = new \GuzzleHttp\Client;
-
             $service = "http://center.fibosms.com/service.asmx/SendMaskedSMS?";
-            $query = array(
-                'clientNo' => 'CL1808210001', //string
-                'clientPass' => 'fnUEURJNm4YEh53A', // string
-                'senderName' => '0901800073', //string
-                'phoneNumber' => $params['phone'],
-                'smsMessage' => $params['content'],
-                'smsGUID' => 0,
-                'serviceType' => 0
-            );
 
-            $builder = "";
-            $i = 0;
-            foreach($query as $key => $param){
-                if($i == 0) $builder .= $key."=".$param;
-                else $builder .= "&".$key."=".$param;
-                $i++;
+            if($lists){
+                foreach($lists as $key => $item){
+                    $query = array(
+                        'clientNo' => 'CL1808210001', //string
+                        'clientPass' => 'fnUEURJNm4YEh53A', // string
+                        'senderName' => '0901800073', //string
+                        'phoneNumber' => ($key == 'phone') ? "0".$item['phone'] : $item,
+                        'smsMessage' => $params['content'],
+                        'smsGUID' => 0,
+                        'serviceType' => 0
+                    );
+        
+                    $builder = "";
+                    $i = 0;
+                    foreach($query as $key => $param){
+                        if($i == 0) $builder .= $key."=".$param;
+                        else $builder .= "&".$key."=".$param;
+                        $i++;
+                    }
+        
+                    $url = $service.$builder;
+                    $status = $this->send_multi($url, $query, $params);
+                    //get errCode
+                    $errCode = Config::get('constants.ErrCode');
+                }
             }
-
-            $url = $service.$builder;
-            $res = $client->request('GET', $url);
-            $result = $res->getBody();
-
-            $xml = $this->XMLtoArray($result);
-            $array = $xml['STRING']['content'];
-            $status = preg_replace('/[^0-9]/', '', $array);
-            //get errCode
-            $errCode = Config::get('constants.ErrCode');
             
-            //save logs
-            $data = array(
-                'sender' => $query['senderName'],
-                'reciever' => $params['phone'],
-                'content' => $params['content'],
-                'status' => $status
-            );
-
-            Sms::create($data);
         }
 
         return view('admin.sms.index', array('message' => $errCode[$status], 'data' => $params));
+    }
+
+    /**
+     * Send multi sms
+     * @param $url
+     * @return $array
+     */
+    public function send_multi($url, $query, $params){
+        $array = array();
+        $client = new \GuzzleHttp\Client;
+        $res = $client->request('GET', $url);
+        $result = $res->getBody();
+
+        $xml = $this->XMLtoArray($result);
+        $array = $xml['STRING']['content'];
+        $status = preg_replace('/[^0-9]/', '', $array);
+        
+        //save logs
+        $data = array(
+            'sender' => $query['senderName'],
+            'reciever' => $query['phoneNumber'],
+            'content' => $params['content'],
+            'status' => $status
+        );
+
+        Sms::create($data);
+
+        return $status;
     }
 
     /**
@@ -180,35 +205,28 @@ class SendSmsController extends Controller
 
      */
 
-    public function importFile(Request $request){
-        
+    public function importFile($request){
+
         if($request->hasFile('sample_file')){
 
             $path = $request->file('sample_file')->getRealPath();
 
             $data = \Excel::load($path)->get();
 
-            
-
             if($data->count()){
                 
                 foreach ($data as $key => $value) {
 
-                    $arr[] = ['phone' => $value->so_dien_thoai, 'name' => $value->ten_dataname];
+                    $arr[] = ['phone' => $value->so_dien_thoai];
                 }
 
                 if(!empty($arr)){
-
                     return $arr;
-
                 }
 
             }
 
         }
-
-        dd('Request data does not have any files to import.');      
-
     } 
 
     /**

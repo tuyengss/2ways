@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <title>
-    @lang('quickadmin.quickadmin_title')
+      Admin 2ways| Demo function
 </title>
 
 <meta http-equiv="X-UA-Compatible"

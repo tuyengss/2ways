@@ -31,7 +31,7 @@ class KeywordsController extends Controller
         }
 
 
-        $keywords = keyword::all();
+        $keywords = keyword::all()->sortByDesc('id');;
 
         return view('admin.sms.index_keyword', compact('keywords'));
     }

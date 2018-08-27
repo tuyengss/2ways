@@ -17,6 +17,7 @@ use App\Sms;
 use Config;
 use Orchestra\Parser\Xml\Facade as XmlParser;
 use Excel;
+use Illuminate\Support\Facades\URL;
 
 class SendSmsController extends Controller
 {
@@ -228,6 +229,29 @@ class SendSmsController extends Controller
 
         }
     } 
+
+    /**
+     * Dowload excel file
+     * @return $file
+     */
+    public function downloadFile(){
+        $file = 'Maudulieu.xls';
+        $file = public_path('upload/'.$file);
+
+        if(!file_exists($file)){ // file does not exist
+            die('file not found');
+        } else {
+            header("Cache-Control: public");
+            header("Content-Description: File Transfer");
+            header("Content-Disposition: attachment; filename=$file");
+            header("Content-Type: application/zip");
+            header("Content-Transfer-Encoding: binary");
+
+            // read the file from disk
+            readfile($file);
+            return $file;
+        }
+    }
 
     /**
      * parse xml.

@@ -54,7 +54,8 @@
 							{!! Form::file('sample_file', array('class' => 'form-control')) !!}
 		
 							{!! $errors->first('sample_file', '<p class="alert alert-danger">:message</p>') !!}
-		
+							<br/>
+							<a class="btn btn-xs bg-green" href="{{ url('/download-file') }}">Mẫu Excel download</a>
 							</div>
 					</div>
 

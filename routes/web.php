@@ -31,6 +31,7 @@ $this->post('password/reset', 'Auth\ResetPasswordController@reset')->name('auth.
 
 //excel
 Route::post('import-file', 'Admin\SendSmsController@importFile')->name('import.file');
+Route::get('download-file', 'Admin\SendSmsController@DownloadFile')->name('import.download-file');
 
 
 

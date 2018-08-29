@@ -12,7 +12,7 @@
             </li>
             <li class="{{ $request->segment(1) == 'send_sms' ? 'active' : '' }}">
                 <a href="{{ url('/send_sms') }}">
-                    <i class="fa fa-send"></i>
+                    <i class="fa fa-commenting-o"></i>
                     <span class="title">GỬI TIN NHẮN</span>
                 </a>
             </li>
@@ -24,7 +24,7 @@
             </li> --}}
             <li class="{{ $request->segment(1) == 'inbox_send' ? 'active' : '' }}">
                 <a href="{{ url('/inbox_send') }}">
-                    <i class="fa fa-envelope"></i>
+                    <i class="fa fa-send"></i>
                     <span class="title">TIN NHẮN GỬI ĐI </span>
                 </a>
             </li>

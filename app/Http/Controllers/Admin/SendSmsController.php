@@ -128,9 +128,11 @@ class SendSmsController extends Controller
         
         $excel = $this->importFile($request);
         if($excel){
-            $lists = $excel;            
+            $lists = $excel;  
+            $flag = true;          
         }else{
             $lists = array('only' => $params['phone']);
+            $flag = false;
         }
         
         if($params){    
@@ -142,7 +144,7 @@ class SendSmsController extends Controller
                         'clientNo' => 'CL1808210001', //string
                         'clientPass' => 'fnUEURJNm4YEh53A', // string
                         'senderName' => '0901800073', //string
-                        'phoneNumber' => ($key == 'phone') ? "0".$item['phone'] : $item,
+                        'phoneNumber' => ($flag == true) ? "0".$item['phone']: $item,
                         'smsMessage' => $params['content'],
                         'smsGUID' => 0,
                         'serviceType' => 0

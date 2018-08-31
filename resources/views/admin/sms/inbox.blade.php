@@ -10,7 +10,7 @@
         </div>
 
         <div class="panel-body table-responsive">
-            <table class="table table-bordered table-striped {{ count($sms) > 0 ? 'datatable' : '' }} @can('user_delete') dt-select @endcan">
+            <table class="table table-bordered table-striped >
                 <thead>
                     <tr>
                         <th></th>
@@ -29,7 +29,7 @@
                 </thead>
                 
                 <tbody>
-                    @if (count($sms) > 0)
+                    @if (($sms))
 
                         @foreach ($sms as  $key => $item)
                             <tr>

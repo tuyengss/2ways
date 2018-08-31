@@ -34,6 +34,13 @@
                     <span class="title">TIN NHẮN ĐẾN </span>
                 </a>
             </li>
+		<li class="{{ $request->segment(1) == 'gateway' ? 'active' : '' }}">
+                <a href="{{ url('/gateway') }}">
+                    <i class="fa fa-envelope"></i>
+                    <span class="title">GATEWAYS </span>
+                </a>
+            </li>
+
 
             <li class="{{ $request->segment(1) == 'keyword' ? 'active' : '' }}">
                 <a href="{{ url('/keyword') }}">

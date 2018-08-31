@@ -15,6 +15,8 @@ $this->get('send_sms', 'Admin\SendSmsController@index')->name('admin.send_sms');
 $this->patch('send_sms', 'Admin\SendSmsController@sendSms')->name('admin.send_sms');
 $this->get('inbox_send', 'Admin\SendSmsController@getAllSms')->name('admin.inbox_send');
 $this->get('inbox_come', 'Admin\SendSmsController@getAllSmsCome')->name('admin.inbox_come');
+$this->get('gateway', 'Admin\SendSmsController@getAllGateWay')->name('admin.gateway');
+
 
 //keyword
 $this->get('keyword', 'Admin\KeywordsController@index')->name('admin.keyword');

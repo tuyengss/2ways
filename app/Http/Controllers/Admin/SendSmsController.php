@@ -18,6 +18,8 @@ use Config;
 use Orchestra\Parser\Xml\Facade as XmlParser;
 use Excel;
 use Illuminate\Support\Facades\URL;
+use App\Mo;
+use App\keyword;
 
 class SendSmsController extends Controller
 {
@@ -34,7 +36,7 @@ class SendSmsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
     /**
@@ -88,6 +90,23 @@ class SendSmsController extends Controller
     }
 
      /**
+     * Display a listing of MT.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllGateWay()
+    {
+        if (! Gate::allows('user_access')) {
+            return abort(401);
+        }
+
+        $sms = Mo::all()->where('type',0)->sortByDesc('id');
+
+        return view('admin.sms.gateway', compact('sms'));
+    }
+
+
+     /**
      * Display a listing of message MO.
      *
      * @return \Illuminate\Http\Response
@@ -98,21 +117,72 @@ class SendSmsController extends Controller
             return abort(401);
         }
 
-        $url = 'http://192.168.1.99:8888/api/v1/logs';
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($ch);
-        curl_close($ch);
-        
-        $obj = json_decode($data);
-        $sms = array();
-        if($obj)
-            $sms = $obj->logs;
-        
-        
-        return view('admin.sms.inbox', compact('sms'));
+	    $sms = Mo::all()->where('type',1)->sortByDesc('id');
+
+        return view('admin.sms.gateway', compact('sms'));
+    }
+
+    /**
+     * Get MO From gateways
+     * http://103.48.194.60/WebserivceFibo/MoPartner.asmx 
+        STT	Tên trường	Kiểu dữ liệu	Mô tả
+        1	Username	varchar(15)	Khách hàng tạo ra username
+        2	Password	varchar(10)	Khách hàng tạo ra pass 
+        3	PrefixId	varchar(10)	Các đầu số 8x77 6x89
+        4	Phonenumber	varchar(160)	Số điện thoại khách hàng nhắn tin lên đầu số
+        5	MsgContent	decimal(10)	Nội dung khách hàng nhắn tin lên đầu số
+        6	RequestId		Tạo ra ID để fibo gọi sang
+
+        - Giá trị trả về: -1: thất bại, 1: thành công
+
+     * @param $request
+     * @return boolean
+     */
+    public function moGateWay(Request $request){
+        //MO recieved    
+        $params = $request->all();
+        // set post fields
+        $post = [
+            'Username' => $params['Username'],
+            'Password' => $params['Password'],
+            'PrefixId'   => $params['PrefixId'],
+            'Phonenumber' => $params['Phonenumber'],
+            'MsgContent' => $params['MsgContent'],
+            'RequestId' => $params['RequestId']
+        ];
+
+        //valid MsgContent
+        $keywords = keyword::all()->toArray();
+	
+        if($keywords){
+            foreach($keywords as $keyword){
+                if(preg_match('/'.strtolower($keyword['keyword']).'/', $params['MsgContent'])){
+                    //send sms
+            	    $status = $this->invoke_sms(
+                        array(
+                            'phone'=> str_replace('84', '0', $params['Phonenumber']),
+                            'content' => $params['MsgContent']
+                        ), $request
+                    );		        
+                }else{
+		            //not fit		
+                }
+            }
+        }
+
+        $data = array(
+            'Username' => $post['Username'],
+            'Phonenumber' => $post['Phonenumber'],
+            'MsgContent' => $post['MsgContent'],
+            'status' => 1,
+            'type' => 1, //2ways 0//getway
+            'RequestId' => $post['RequestId'],
+        );
+
+        //save to logs
+        $logs = Mo::create($data);
+
+        return true;
     }
 
     /**
@@ -126,6 +196,18 @@ class SendSmsController extends Controller
         $this->validator($request->all())->validate();
         $params = $request->all();
         
+        $message = $this->invoke_sms($params, $request);
+        return view('admin.sms.index', array('message' => $message, 'data' => $params));
+    }
+
+    /**
+     * invoke sms
+     * @params 
+     * @return 
+     */
+    public function invoke_sms($params, $request){
+         //get errCode
+        $errCode = Config::get('constants.ErrCode');
         $excel = $this->importFile($request);
         if($excel){
             $lists = $excel;  
@@ -160,17 +242,15 @@ class SendSmsController extends Controller
         
                     $url = $service.$builder;
                     $status = $this->send_multi($url, $query, $params);
-                    //get errCode
-                    $errCode = Config::get('constants.ErrCode');
                 }
             }
             
         }
 
-        return view('admin.sms.index', array('message' => $errCode[$status], 'data' => $params));
+        return $errCode[$status];
     }
 
-    /**
+   /**
      * Send multi sms
      * @param $url
      * @return $array
@@ -185,15 +265,17 @@ class SendSmsController extends Controller
         $array = $xml['STRING']['content'];
         $status = preg_replace('/[^0-9]/', '', $array);
         
-        //save logs
-        $data = array(
-            'sender' => $query['senderName'],
-            'reciever' => $query['phoneNumber'],
-            'content' => $params['content'],
-            'status' => $status
-        );
+        if($status == 1 || $status == 200){
+            //save logs
+            $data = array(
+                'sender' => $query['senderName'],
+                'reciever' => $query['phoneNumber'],
+                'content' => $params['content'],
+                'status' => $status
+            );
 
-        Sms::create($data);
+            Sms::create($data);
+        }
 
         return $status;
     }
@@ -207,7 +289,6 @@ class SendSmsController extends Controller
      * @return void
 
      */
-
     public function importFile($request){
 
         if($request->hasFile('sample_file')){

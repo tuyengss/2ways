@@ -7,7 +7,9 @@ use App\Http\Requests;
 use App\Income;
 use App\Services\WidgetsInfoService;
 use App\Services\WidgetsGraphsService;
+use Illuminate\Http\Request;
 use App\Mo;
+
 
 class HomeController extends Controller
 {
@@ -18,7 +20,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        //$this->middleware('auth');
     }
 
 
@@ -68,38 +70,29 @@ class HomeController extends Controller
             'RequestId' => $params['RequestId']
         ];
 
-        $ch = curl_init('http://103.48.194.60/WebserivceFibo/MoPartner.asmx');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        //valid MsgContent
+        $patent = '/Fibo DK VIP/i';
 
-        // execute!
-        $response = curl_exec($ch);
-
-        // close the connection, release resources used
-        curl_close($ch);
-
-        $response = 1;
-        //send MT 
-        if($response == 1){
-            self::sendMt($post);
+        if(preg_match($patent, $params['MsgContent'])){
+            $message = 'Cam on ban da tham gia goi sms VIP cua Fibo';
+        }else{
+            $message = 'Cu phap sai, vui long xem lai cu phap';
         }
-
-        // do anything you want with your response
-        //var_dump($response);
-        $status = -1;
 
         $data = array(
             'Username' => $post['Username'],
             'Phonenumber' => $post['Phonenumber'],
             'MsgContent' => $post['MsgContent'],
-            'status' => $status,
+            'status' => 1,
             'RequestId' => $post['RequestId'],
         );
 
         //save to logs
         $logs = Mo::create($data);
 
-        return $response;
+        return json_encode(array(
+            1 => $message
+        ));
     }
 
     /**
@@ -136,7 +129,9 @@ class HomeController extends Controller
             'FeeTypeId' => 1
         ];
 
-        $ch = curl_init('http://103.48.194.60/WebserivceFibo/MtReceiver.asmx');
+	 var_dump($post); 
+
+        $ch = curl_init('http://103.48.194.60/WebserivceFibo/MtReceiver.asmx?wsdl');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
@@ -145,12 +140,7 @@ class HomeController extends Controller
 
         // close the connection, release resources used
         curl_close($ch);
-        var_dump($response);
-        $response = 1;
-        //update logs
-        if($response == 1){
-            $log = Mo::findOrFail($params['RequestId']);
-            $log->update(array('MT' => 1));
-        }
+
+        return $response;
     }
 }
